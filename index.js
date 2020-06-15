@@ -110,16 +110,26 @@ const bigIntModPow = (n, exp, mod) => {
 }
 
 const rsaFindPrimes = ({d, e, n}) => {
+    const ONE = BigInt(1);
+
     const dDecoded = base64UrlDecodeToBigInt(d);
     const eDecoded = base64UrlDecodeToBigInt(e);
     const nDecoded = base64UrlDecodeToBigInt(n);
 
     const { p, q } = findPrimes({ d: dDecoded, e: eDecoded, n: nDecoded });
 
+    const dp = dDecoded % ( p - ONE);
+    const dq = dDecoded % ( q - ONE);
+    const qi = (ONE % p) / q;
+
     const pEncoded = base64UrlEncodeFromBigInt(p);
     const qEncoded = base64UrlEncodeFromBigInt(q);
 
-    return { p: pEncoded, q: qEncoded };
+    const dpEncoded = base64UrlEncodeFromBigInt(dp);
+    const dqEncoded = base64UrlEncodeFromBigInt(dq);
+    const qiEncoded = base64UrlEncodeFromBigInt(qi);
+
+    return { p: pEncoded, q: qEncoded, dp: dpEncoded, dq: dqEncoded, qi: qiEncoded };
 }
 
 module.exports = rsaFindPrimes;
